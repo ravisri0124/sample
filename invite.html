@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+html,body{
+margin:0;
+height:100%;
+overflow:hidden;
+font-family:'Playfair Display',serif;
+}
+
+/* 🌿 SOFT PASTEL BACKGROUND (GLOBAL) */
+body{
+background:linear-gradient(180deg,#eef3ea,#e6efe5,#dde6db);
+}
+
+/* SLIDER */
+.container{
+display:flex;
+width:300%;
+height:100vh;
+transition:transform 0.5s ease;
+}
+
+/* PAGE */
+.page{
+width:100vw;
+height:100vh;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* FRAME */
+.frame{
+position:absolute;
+top:20px;
+left:20px;
+right:20px;
+bottom:20px;
+border:1.5px solid #c9a646;
+}
+
+.frame::after{
+content:"";
+position:absolute;
+top:10px;
+left:10px;
+right:10px;
+bottom:10px;
+border:1px solid #c9a646;
+}
+
+/* CONTENT */
+.content{
+text-align:center;
+max-width:320px;
+z-index:2;
+}
+
+/* TITLE */
+.title{
+font-family:'Great Vibes';
+font-size:42px;
+color:#c9a646;
+}
+
+/* NAMES */
+.names{
+font-family:'Great Vibes';
+font-size:48px;
+color:#6b1f2a;
+margin-top:20px;
+line-height:1.3;
+}
+
+/* DETAILS */
+.details{
+margin-top:30px;
+line-height:2;
+font-size:17px;
+color:#6b1f2a;
+}
+
+/* HIERARCHY */
+.date{
+font-size:20px;
+color:#c9a646;
+font-weight:600;
+}
+
+.time{
+font-style:italic;
+}
+
+.venue{
+margin-top:10px;
+font-weight:600;
+}
+
+.location{
+font-size:15px;
+opacity:0.8;
+}
+
+/* BUTTON */
+.button{
+display:inline-block;
+margin-top:18px;
+padding:10px 20px;
+background:#6b1f2a;
+color:#fff;
+border-radius:4px;
+text-decoration:none;
+z-index:3;
+position:relative;
+}
+
+/* NAVIGATION LAYER */
+.nav{
+position:absolute;
+width:100%;
+height:100%;
+z-index:1;
+}
+
+</style>
+
+<script>
+
+let current = 0;
+const total = 3;
+
+function showPage(){
+document.querySelector('.container').style.transform =
+"translateX(-"+current*100+"vw)";
+}
+
+/* TAP NAVIGATION */
+function tapNav(e){
+let x = e.clientX || e.touches[0].clientX;
+let width = window.innerWidth;
+
+if(x > width/2){
+current = (current + 1) % total;
+}else{
+current = (current - 1 + total) % total;
+}
+
+showPage();
+}
+
+/* SWIPE NAV */
+let startX = 0;
+
+function touchStart(e){
+startX = e.touches[0].clientX;
+}
+
+function touchEnd(e){
+let endX = e.changedTouches[0].clientX;
+
+if(startX - endX > 50){
+current = (current + 1) % total;
+}
+else if(endX - startX > 50){
+current = (current - 1 + total) % total;
+}
+
+showPage();
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- PAGE 1 -->
+<div class="page">
+
+<div class="nav"
+onclick="tapNav(event)"
+ontouchstart="touchStart(event)"
+ontouchend="touchEnd(event)"></div>
+
+<div class="frame"></div>
+
+<div class="content">
+<div class="title">Marriage Invitation</div>
+
+<div class="names">
+Ravichandu<br>&<br>Sridevi
+</div>
+</div>
+
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+
+<div class="nav"
+onclick="tapNav(event)"
+ontouchstart="touchStart(event)"
+ontouchend="touchEnd(event)"></div>
+
+<div class="frame"></div>
+
+<div class="content">
+
+<div class="title">Venue</div>
+
+<div class="details">
+
+<div class="date">13 May 2026</div>
+<div class="time">6:57 PM</div>
+
+<div class="venue">Ammaji Kalyana Mandapam</div>
+<div class="location">Juvvalapalem, Kalla Mandal</div>
+
+<a class="button"
+href="https://maps.app.goo.gl/nF1GkfJKyZCrqB3M8"
+target="_blank">
+View Location
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+
+<div class="nav"
+onclick="tapNav(event)"
+ontouchstart="touchStart(event)"
+ontouchend="touchEnd(event)"></div>
+
+<div class="frame"></div>
+
+<div class="content">
+
+<div class="title">Reception</div>
+
+<div class="details">
+
+<div class="date">17 May 2026</div>
+
+<div class="venue">Raithu Sangha Bhavan</div>
+<div class="location">Velivennu, Undrajavaram Mandal</div>
+
+<a class="button"
+href="https://maps.app.goo.gl/YkmVW6dPRa83GCdQ6"
+target="_blank">
+View Location
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
