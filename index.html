@@ -49,9 +49,14 @@ position:absolute;
 width:100%;
 height:100%;
 object-fit:cover;
+transition: transform 6s ease;
 }
 
-/* CONTENT */
+.page.active .card img{
+transform: scale(1.05);
+}
+
+/* CONTENT (FIXED - no background box) */
 .content{
 position:absolute;
 top:50%;
@@ -60,27 +65,34 @@ transform:translate(-50%,-50%);
 width:82%;
 text-align:center;
 z-index:2;
+pointer-events:auto;
+}
+
+/* NAV */
+.nav{
+position:absolute;
+width:100%;
+height:100%;
+z-index:1;
 }
 
 /* GOLD EFFECT */
 .gold{
 background: linear-gradient(
 120deg,
-#5a3d00,
-#c9a646,
-#fff3b0,
-#c9a646,
-#8a6d1f,
-#fff3b0,
-#c9a646
+#3a2a00,
+#d4af37,
+#fff8dc,
+#d4af37,
+#7a5c00
 );
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 
 text-shadow:
 0 1px 0 rgba(255,255,255,0.5),
-0 2px 4px rgba(0,0,0,0.25),
-0 0 10px rgba(201,166,70,0.4);
+0 2px 4px rgba(0,0,0,0.4),
+0 0 8px rgba(212,175,55,0.4);
 
 background-size:200% auto;
 animation:shine 7s linear infinite;
@@ -95,7 +107,6 @@ animation:shine 7s linear infinite;
 .invite{
 font-family:'Great Vibes';
 font-size:44px;
-letter-spacing:1px;
 }
 
 .names{
@@ -113,10 +124,9 @@ font-size:48px;
 .weds{
 font-family:'Allura';
 font-size:28px;
-opacity:0.95;
 }
 
-/* SECTION HEADINGS */
+/* HEADINGS */
 .heading{
 font-family:'Great Vibes';
 font-size:40px;
@@ -127,7 +137,8 @@ margin-bottom:12px;
 .details{
 font-size:15px;
 line-height:2;
-color:#5a3d00;
+color:#ffffff;
+text-shadow:0 2px 6px rgba(0,0,0,0.5);
 }
 
 .date{
@@ -155,20 +166,20 @@ opacity:0.9;
 .button{
 margin-top:16px;
 padding:10px 20px;
-background:#6b1f2a;
+background:#7a1f2b;
 color:#fff;
 border-radius:6px;
 text-decoration:none;
 display:inline-block;
 font-size:14px;
+z-index:10;
+position:relative;
+cursor:pointer;
+box-shadow:0 6px 15px rgba(0,0,0,0.3);
 }
 
-/* NAV */
-.nav{
-position:absolute;
-width:100%;
-height:100%;
-z-index:5;
+.button:hover{
+background:#922838;
 }
 
 </style>
@@ -177,10 +188,18 @@ z-index:5;
 
 let current=0;
 const total=4;
+let autoSlideInterval=null;
+
+let touchStartX=0;
+let touchEndX=0;
+let touchStartY=0;
+let touchEndY=0;
+const minSwipeDistance=50;
 
 function showPage(i){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.querySelectorAll('.page')[i].classList.add('active');
+resetAutoSlide();
 }
 
 function nextPage(){
@@ -193,20 +212,68 @@ current=(current-1+total)%total;
 showPage(current);
 }
 
+function startAutoSlide(){
+autoSlideInterval=setInterval(()=>{ nextPage(); },5000);
+}
+
+function resetAutoSlide(){
+if(autoSlideInterval){ clearInterval(autoSlideInterval); }
+startAutoSlide();
+}
+
 function tapNav(e){
 if(e.target.closest('.button')) return;
 
-let x=e.clientX || e.touches[0].clientX;
+let x=e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+if(!x) return;
+
 let w=window.innerWidth;
 
 if(x>w/2) nextPage();
 else prevPage();
 }
 
-/* AUTO FLOW */
+/* SWIPE */
+function handleTouchStart(e){
+if(e.target.closest('.button')) return;
+
+touchStartX=e.touches[0].clientX;
+touchStartY=e.touches[0].clientY;
+touchEndX=touchStartX;
+touchEndY=touchStartY;
+}
+
+function handleTouchMove(e){
+if(e.target.closest('.button')) return;
+
+touchEndX=e.touches[0].clientX;
+touchEndY=e.touches[0].clientY;
+}
+
+function handleTouchEnd(e){
+if(e.target.closest('.button')) return;
+
+const horizontalDistance=touchEndX-touchStartX;
+const verticalDistance=Math.abs(touchEndY-touchStartY);
+
+if(verticalDistance<Math.abs(horizontalDistance)){
+if(horizontalDistance>minSwipeDistance){
+prevPage();
+}else if(horizontalDistance<-minSwipeDistance){
+nextPage();
+}
+}
+}
+
 window.onload=function(){
 showPage(0);
-setTimeout(()=>showPage(1),1500);
+startAutoSlide();
+
+document.querySelectorAll('.nav').forEach(nav=>{
+nav.addEventListener('touchstart',handleTouchStart,false);
+nav.addEventListener('touchmove',handleTouchMove,false);
+nav.addEventListener('touchend',handleTouchEnd,false);
+});
 };
 
 </script>
@@ -216,10 +283,10 @@ setTimeout(()=>showPage(1),1500);
 <body>
 
 <!-- PAGE 1 -->
-<div class="page">
+<div class="page active">
 <div class="nav" onclick="tapNav(event)"></div>
 <div class="card">
-<img src="./card.jpg">
+<img src="https://raw.githubusercontent.com/ravisri0124/sample/main/card.jpg">
 <div class="content">
 <div class="invite gold">Marriage Invitation</div>
 </div>
@@ -230,7 +297,7 @@ setTimeout(()=>showPage(1),1500);
 <div class="page">
 <div class="nav" onclick="tapNav(event)"></div>
 <div class="card">
-<img src="./card.jpg">
+<img src="https://raw.githubusercontent.com/ravisri0124/sample/main/card.jpg">
 <div class="content">
 <div class="names gold">
 <div class="name-top">RaviChandu</div>
@@ -245,7 +312,7 @@ setTimeout(()=>showPage(1),1500);
 <div class="page">
 <div class="nav" onclick="tapNav(event)"></div>
 <div class="card">
-<img src="./card.jpg">
+<img src="https://raw.githubusercontent.com/ravisri0124/sample/main/card.jpg">
 <div class="content">
 <div class="heading gold">Venue</div>
 <div class="details">
@@ -263,7 +330,7 @@ setTimeout(()=>showPage(1),1500);
 <div class="page">
 <div class="nav" onclick="tapNav(event)"></div>
 <div class="card">
-<img src="./card.jpg">
+<img src="https://raw.githubusercontent.com/ravisri0124/sample/main/card.jpg">
 <div class="content">
 <div class="heading gold">Reception</div>
 <div class="details">
